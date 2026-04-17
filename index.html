@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orden de Servicio - Almaderma</title>
+<style>
+  :root {
+    --brand-color: #ca5598;
+    --brand-light: #fbebf3;
+    --color-text-primary: #333333;
+    --color-text-secondary: #666666;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f9f9f9;
+    --color-border-primary: var(--brand-color);
+    --color-border-secondary: #cccccc;
+    --color-border-tertiary: #eaeaec;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+    --font-sans: system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); background-color: #f4f4f5; }
+  .container { padding: 1.5rem 1rem; max-width: 600px; margin: 0 auto; background: #fff; min-height: 100vh; }
+  
+  .logo-container { text-align: center; margin-bottom: 1.5rem; }
+  .logo-container img { max-width: 140px; height: auto; }
+
+  .header-titles { text-align: center; margin-bottom: 1.5rem; }
+
+  .section-title { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 0.75rem; }
+  .card { background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  .field { margin-bottom: 0.85rem; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; }
+  input, textarea, select { width: 100%; font-family: var(--font-sans); font-size: 15px; color: var(--color-text-primary); background: var(--color-background-secondary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; outline: none; transition: border-color 0.15s; }
+  input:focus, textarea:focus, select:focus { border-color: var(--color-border-primary); background: #fff; }
+  input[readonly] { opacity: 0.7; cursor: default; background: #f0f0f0; }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sucursal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  
+  .suc-btn { cursor: pointer; font-size: 14px; font-weight: 500; padding: 10px 8px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-secondary); color: var(--color-text-secondary); background: transparent; text-align: center; transition: all 0.15s; user-select: none; }
+  .suc-btn.active { background: var(--brand-light); color: var(--brand-color); border-color: var(--brand-color); border-width: 1.5px; font-weight: 600; }
+  
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .badge { cursor: pointer; font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--color-border-secondary); color: var(--color-text-secondary); background: transparent; transition: all 0.15s; user-select: none; }
+  .badge.active { background: var(--brand-light); color: var(--brand-color); border-color: var(--brand-color); }
+  
+  .producto-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .producto-row input { flex: 1; }
+  .qty-input { width: 60px !important; flex: none !important; text-align: center; }
+  .btn-add { flex-shrink: 0; width: 32px; height: 40px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .btn-add:hover { background: var(--color-background-secondary); }
+  .btn-del { flex-shrink: 0; width: 32px; height: 40px; border-radius: var(--border-radius-md); border: 1px solid #F7C1C1; background: transparent; color: #A32D2D; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .btn-del:hover { background: #FCEBEB; }
+  
+  .col-labels { display: flex; gap: 8px; margin-bottom: 6px; }
+  .col-labels span { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+  .preview-box { background: var(--color-background-secondary); border: 1px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 15px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.7; white-space: pre-wrap; min-height: 60px; }
+  
+  .btn-wa { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; border-radius: var(--border-radius-lg); border: none; cursor: pointer; font-family: var(--font-sans); font-size: 16px; font-weight: 600; background: #25D366; color: #fff; transition: opacity 0.15s; margin-top: 1.5rem; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2); }
+  .btn-wa:hover { opacity: 0.9; transform: translateY(-1px); }
+  
+  .btn-reset { width: 100%; padding: 12px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); font-family: var(--font-sans); font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 10px; transition: background 0.15s; }
+  .btn-reset:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  
+  .tag-urgente { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #FCEBEB; color: #A32D2D; font-weight: 600; margin-left: 6px; vertical-align: middle; display: none; }
+  .folio-display { font-size: 16px; font-weight: 600; color: var(--brand-color); letter-spacing: 0.03em; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="logo-container">
+    <img src="LOGO ROSA AD - ALMADERMA.png" alt="Logo Almaderma">
+  </div>
+
+  <div class="header-titles">
+    <h2 style="font-size:22px;font-weight:600;color:var(--color-text-primary);margin-bottom:0.35rem;">Orden de Servicio</h2>
+    <p style="font-size:14px;color:var(--color-text-secondary);">Llena los datos y envía directo por WhatsApp</p>
+  </div>
+
+  <p class="section-title">Sucursal</p>
+  <div class="card">
+    <div class="sucursal-grid">
+      <div class="suc-btn" onclick="selectSucursal(this)">FarmaGen</div>
+      <div class="suc-btn" onclick="selectSucursal(this)">MedicPiel</div>
+      <div class="suc-btn" onclick="selectSucursal(this)">Dermamedic</div>
+    </div>
+  </div>
+
+  <p class="section-title">Cliente</p>
+  <div class="card">
+    <div class="field">
+      <label>Folio</label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input id="folio" type="text" readonly class="folio-display" style="flex:1;">
+        <button onclick="generarFolio()" style="flex-shrink:0;padding:9px 14px;border-radius:var(--border-radius-md);border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);font-family:var(--font-sans);font-size:13px;font-weight:500;cursor:pointer;">↻ Nuevo</button>
+      </div>
+    </div>
+    <div class="field"><label>Nombre completo</label><input id="nombre" type="text" placeholder="Ej: María García"></div>
+    <div class="field"><label>Teléfono</label><input id="telefono" type="tel" placeholder="Ej: 6671234567"></div>
+  </div>
+
+  <p class="section-title">Productos</p>
+  <div class="card">
+    <div class="col-labels">
+      <span style="flex:1;">Producto / descripción</span>
+      <span style="width:60px;text-align:center;">Cant.</span>
+      <span style="width:32px;"></span>
+    </div>
+    <div id="productos-list"></div>
+    <button class="btn-add" onclick="agregarProducto()" style="width:100%;height:40px;font-size:14px;font-weight:500;color:var(--brand-color);border:1px dashed var(--brand-color);border-radius:var(--border-radius-md);background:var(--brand-light);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;">
+      + Agregar producto
+    </button>
+  </div>
+
+  <p class="section-title">Dirección de entrega</p>
+  <div class="card">
+    <div class="field"><label>Calle y número</label><input id="calle" type="text" placeholder="Ej: Av. Insurgentes 345 Int. 2B"></div>
+    <div class="row">
+      <div class="field"><label>Colonia</label><input id="colonia" type="text" placeholder="Ej: Centro"></div>
+      <div class="field"><label>Ciudad</label><input id="ciudad" type="text" placeholder="Ej: Culiacán"></div>
+    </div>
+    <div class="field"><label>Referencias</label><input id="referencias" type="text" placeholder="Ej: Casa beige, portón negro"></div>
+  </div>
+
+  <p class="section-title">Detalle del servicio</p>
+  <div class="card">
+    <div class="field">
+      <label>Tipo de envío</label>
+      <div class="badge-row">
+        <span class="badge" onclick="selectBadge(this,'tipo')">Domicilio</span>
+        <span class="badge" onclick="selectBadge(this,'tipo')">Paquetería</span>
+      </div>
+    </div>
+    <div class="field"><label>Hora estimada</label><input id="hora" type="time"></div>
+    <div class="field">
+      <label>Prioridad <span id="tag-urgente" class="tag-urgente">URGENTE</span></label>
+      <div class="badge-row">
+        <span class="badge active" onclick="selectBadge(this,'prio')">Normal</span>
+        <span class="badge" onclick="selectBadge(this,'prio')">Alta</span>
+        <span class="badge" onclick="selectBadge(this,'prio')">Urgente</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-title">Pago</p>
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label>Método de pago</label>
+        <select id="pago">
+          <option value="">— Seleccionar —</option>
+          <option>Efectivo</option>
+          <option>Transferencia</option>
+          <option>Tarjeta</option>
+          <option>Por cobrar</option>
+        </select>
+      </div>
+      <div class="field"><label>Monto total ($)</label><input id="monto" type="number" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <div class="field"><label>Notas adicionales</label><textarea id="notas" placeholder="Instrucciones especiales, cuidados, etc." style="min-height:55px;"></textarea></div>
+  </div>
+
+  <p class="section-title">Vista previa del mensaje</p>
+  <div class="card">
+    <div class="preview-box" id="preview">Completa los datos para ver el mensaje...</div>
+  </div>
+
+  <button class="btn-wa" onclick="enviarWhatsApp()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Enviar por WhatsApp
+  </button>
+  <button class="btn-reset" onclick="limpiarForm()">Limpiar formulario</button>
+</div>
+
+<script>
+  let sucursal = '';
+  let tipoEnvio = '';
+  let prioridad = 'Normal';
+
+  function generarFolio() {
+    const now = new Date();
+    const y = String(now.getFullYear()).slice(2);
+    const m = String(now.getMonth()+1).padStart(2,'0');
+    const d = String(now.getDate()).padStart(2,'0');
+    const rand = String(Math.floor(Math.random()*9000)+1000);
+    document.getElementById('folio').value = `ORD-${y}${m}${d}-${rand}`;
+    actualizarPreview();
+  }
+
+  function selectSucursal(el) {
+    document.querySelectorAll('.suc-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    sucursal = el.textContent.trim();
+    actualizarPreview();
+  }
+
+  function selectBadge(el, group) {
+    el.parentElement.querySelectorAll('.badge').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    if(group==='tipo') tipoEnvio = el.textContent.trim();
+    if(group==='prio') {
+      prioridad = el.textContent.trim();
+      document.getElementById('tag-urgente').style.display = prioridad==='Urgente' ? 'inline' : 'none';
+    }
+    actualizarPreview();
+  }
+
+  function agregarProducto() {
+    const list = document.getElementById('productos-list');
+    const row = document.createElement('div');
+    row.className = 'producto-row';
+    row.innerHTML = `<input type="text" placeholder="Nombre del producto" oninput="actualizarPreview()"><input type="number" class="qty-input" placeholder="1" min="1" value="1" oninput="actualizarPreview()"><button class="btn-del" onclick="this.parentElement.remove();actualizarPreview()">×</button>`;
+    list.appendChild(row);
+    actualizarPreview();
+  }
+
+  function obtenerProductos() {
+    const rows = document.querySelectorAll('.producto-row');
+    const items = [];
+    rows.forEach(r => {
+      const nombre = r.querySelectorAll('input')[0].value.trim();
+      const qty = r.querySelectorAll('input')[1].value.trim() || '1';
+      if(nombre) items.push({ nombre, qty });
+    });
+    return items;
+  }
+
+  function val(id){ return document.getElementById(id).value.trim(); }
+
+  function formatHora(h){
+    if(!h) return '';
+    const [hh,mm] = h.split(':');
+    const hr = parseInt(hh);
+    const ampm = hr>=12 ? 'PM' : 'AM';
+    const hr12 = hr%12||12;
+    return `${hr12}:${mm} ${ampm}`;
+  }
+
+  function construirMensaje(){
+    const folio = val('folio');
+    const nombre = val('nombre');
+    const telefono = val('telefono');
+    const calle = val('calle');
+    const colonia = val('colonia');
+    const ciudad = val('ciudad');
+    const referencias = val('referencias');
+    const hora = val('hora');
+    const pago = val('pago');
+    const monto = val('monto');
+    const notas = val('notas');
+    const productos = obtenerProductos();
+
+    const direccionCompleta = [calle, colonia, ciudad].filter(Boolean).join(', ');
+    const mapsUrl = direccionCompleta
+      ? `https://maps.google.com/?q=${encodeURIComponent(direccionCompleta)}`
+      : '';
+
+    let msg = '';
+    msg += `🏥 *${sucursal || 'SUCURSAL NO SELECCIONADA'}*\n`;
+    msg += `🛵 *ORDEN DE SERVICIO A DOMICILIO*\n`;
+    if(folio) msg += `📋 Folio: *${folio}*\n`;
+
+    msg += `\n👤 *CLIENTE*\n`;
+    if(nombre) msg += `Nombre: ${nombre}\n`;
+    if(telefono) msg += `Tel: ${telefono}\n`;
+
+    if(productos.length > 0) {
+      msg += `\n🛍️ *PRODUCTOS*\n`;
+      productos.forEach(p => {
+        msg += `• ${p.nombre} x${p.qty}\n`;
+      });
+    }
+
+    msg += `\n📍 *DIRECCIÓN DE ENTREGA*\n`;
+    if(calle) msg += `${calle}\n`;
+    if(colonia) msg += `Col. ${colonia}\n`;
+    if(ciudad) msg += `${ciudad}\n`;
+    if(referencias) msg += `Ref: ${referencias}\n`;
+    if(mapsUrl) msg += `🗺️ Ver en Maps: ${mapsUrl}\n`;
+
+    msg += `\n🔧 *DETALLE DEL SERVICIO*\n`;
+    if(tipoEnvio) msg += `Tipo: ${tipoEnvio}\n`;
+    if(hora) msg += `⏰ Hora estimada: ${formatHora(hora)}\n`;
+    if(prioridad && prioridad!=='Normal') msg += `⚡ Prioridad: ${prioridad}\n`;
+
+    msg += `\n💳 *PAGO*\n`;
+    if(pago) msg += `Método: ${pago}\n`;
+    if(monto) msg += `Total: $${parseFloat(monto).toLocaleString('es-MX',{minimumFractionDigits:2})}\n`;
+    if(notas) msg += `\n📝 Notas: ${notas}\n`;
+
+    return msg.trim();
+  }
+
+  function actualizarPreview(){
+    const msg = construirMensaje();
+    document.getElementById('preview').textContent = msg || 'Completa los datos para ver el mensaje...';
+  }
+
+  ['nombre','telefono','calle','colonia','ciudad','referencias','hora','pago','monto','notas'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', actualizarPreview);
+    if(el) el.addEventListener('change', actualizarPreview);
+  });
+
+  function enviarWhatsApp(){
+    if(!sucursal){ alert('Selecciona una sucursal antes de enviar.'); return; }
+    const msg = construirMensaje();
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function limpiarForm(){
+    ['nombre','telefono','calle','colonia','ciudad','referencias','hora','pago','monto','notas'].forEach(id => {
+      const el = document.getElementById(id); if(el) el.value='';
+    });
+    document.getElementById('productos-list').innerHTML = '';
+    sucursal=''; tipoEnvio=''; prioridad='Normal';
+    document.querySelectorAll('.suc-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.badge').forEach(b=>b.classList.remove('active'));
+    document.querySelector('.badge').classList.add('active');
+    document.getElementById('tag-urgente').style.display='none';
+    generarFolio();
+    actualizarPreview();
+  }
+
+  generarFolio();
+  agregarProducto();
+</script>
+</body>
+</html>
